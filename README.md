@@ -67,6 +67,12 @@ app/                 (blocked from the web)
 config.php           created by install.php — database password and secret (never in Git)
 ```
 
+## Privacy and legal
+
+- `/privacy` (≈3,200 words) and `/terms` (≈3,500 words) cover GDPR / UK GDPR, India's DPDP Act 2023 and IT Rules grievance process, Canada's PIPEDA, US state privacy laws (CCPA/CPRA and others), and Australia/New Zealand; review guidelines; vendor rules; featured-placement payments and refunds; content reporting and takedown; liability; and disputes.
+- Business-specific details (legal name, address, governing law, courts, Grievance Officer, hosting location) are entered in **Moderation → Settings → Legal** and appear as highlighted blanks until then.
+- The policies describe what the code actually does: account self-service in **My account → Your data** (download as JSON, delete account), automatic deletion of sign-in codes after 24 hours, proof files 12 months after moderation, and rejected reviews after 12 months.
+
 ## Before launch
-- Have a lawyer review `/privacy` and `/terms`.
+- Fill in Moderation → Settings → Legal, then have a lawyer approve `/privacy` and `/terms`.
 - Starter listings come from public sources (October 2026) and carry no ratings. Ten have no website yet; vendors add it when they claim, or set it in Moderation → Directory.

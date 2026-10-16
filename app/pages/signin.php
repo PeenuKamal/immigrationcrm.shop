@@ -91,6 +91,7 @@ if (is_post()) {
         <p id="email-hint" class="hint" <?= $error ? 'style="color:var(--cons)"' : '' ?>><?= e($error ?? 'For example name@yourfirm.com. Personal Gmail, Yahoo and Outlook addresses can\'t be used.') ?></p>
       </div>
       <button class="btn">Email me a code</button>
+      <p class="small muted" style="margin:16px 0 0">By continuing you agree to our <a href="/terms">Terms of Service</a> and confirm you've read our <a href="/privacy">Privacy Policy</a>. You must be 18 or older.</p>
     </form>
   <?php endif; ?>
   </div>

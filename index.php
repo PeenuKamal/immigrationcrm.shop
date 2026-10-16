@@ -89,6 +89,8 @@ function not_found(): never
     exit;
 }
 
+housekeeping();
+
 try {
     if (!$file) not_found();
     if (str_starts_with($file, 'endpoints/')) {

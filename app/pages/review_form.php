@@ -109,7 +109,7 @@ $sel = function (string $name, array $opts) use ($f) {
       </div>
       <div class="field checks" style="display:grid;gap:8px">
         <label><input type="checkbox" name="show_name"> Show my name and firm on the review</label>
-        <label><input type="checkbox" name="consent"> This is my own honest experience, and I'm not paid or employed by the vendor or a competitor.</label>
+        <label><input type="checkbox" name="consent"> This is my own honest experience from the last 24 months. I'm not employed by, paid by or connected to the vendor or a competitor, I haven't been offered anything for this review, and it follows the <a href="/terms#guidelines" target="_blank">review guidelines</a>.</label>
       </div>
       <button class="btn stamp">Submit review</button>
     </form>

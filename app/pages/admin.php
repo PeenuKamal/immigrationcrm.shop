@@ -219,6 +219,22 @@ $decide = function (string $action, int $id, bool $reason = false, string $rejec
         <?= $field('indexnow_key', 'IndexNow key', 'Created for you during setup.') ?>
       </div>
     </section>
+    <section class="panel"><h2 style="font-size:var(--step-2)">Legal details (Terms and Privacy Policy)</h2>
+      <p class="small muted">These fill in the highlighted blanks on the <a href="/terms" target="_blank">Terms</a> and <a href="/privacy" target="_blank">Privacy Policy</a>. Have your lawyer confirm them.</p>
+      <div class="grid-2">
+        <?= $field('legal_entity_name', 'Legal name of the business', 'e.g. The Digi Sparrow Private Limited') ?>
+        <?= $field('legal_entity_type', 'Type and registration', 'e.g. a private limited company incorporated in India (CIN …)') ?>
+        <?= $field('legal_address', 'Registered address') ?>
+        <?= $field('legal_country', 'Country of the business', 'e.g. India') ?>
+        <?= $field('governing_law', 'Governing law', 'e.g. the laws of India') ?>
+        <?= $field('legal_venue', 'Courts / venue for disputes', 'e.g. the courts at Ludhiana, Punjab') ?>
+        <?= $field('grievance_officer_name', 'Grievance Officer name', 'Required in India for platforms hosting user content') ?>
+        <?= $field('grievance_officer_email', 'Grievance Officer email') ?>
+        <?= $field('privacy_email', 'Privacy contact email', 'Where people send data requests') ?>
+        <?= $field('hosting_location', 'Where data is hosted', 'e.g. Hostinger data centres in India (or the region you chose)') ?>
+        <?= $field('legal_effective_date', 'Effective date of the current versions', 'YYYY-MM-DD') ?>
+      </div>
+    </section>
     <div><button class="btn">Save settings</button></div>
   </form>
   <form method="post" style="margin-top:16px"><?= csrf_field() ?><input type="hidden" name="action" value="test_email"><button class="btn secondary">Send me a test email</button></form>

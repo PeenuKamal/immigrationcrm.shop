@@ -23,6 +23,18 @@ const SETTING_DEFAULTS = [
     'bing_verification' => '',
     'yandex_verification' => '',
     'indexnow_key' => '',
+    // Legal details used in the Terms and Privacy Policy (Moderation → Settings → Legal)
+    'legal_entity_name' => '',
+    'legal_entity_type' => '',
+    'legal_address' => '',
+    'legal_country' => '',
+    'governing_law' => '',
+    'legal_venue' => '',
+    'grievance_officer_name' => '',
+    'grievance_officer_email' => '',
+    'privacy_email' => '',
+    'hosting_location' => '',
+    'legal_effective_date' => '2026-10-16',
 ];
 
 function settings_all(bool $refresh = false): array
@@ -77,4 +89,16 @@ function category_seo(string $slug, string $name): string
 function category_seo_lower(string $slug, string $name): string
 {
     return preg_replace_callback('/\b([A-Z][a-z]+)\b/', fn($m) => strtolower($m[1]), category_seo($slug, $name));
+}
+
+/** A legal detail from Settings, or a highlighted placeholder for the lawyer to complete. */
+function legal(string $key, string $label): string
+{
+    $v = setting($key);
+    return $v !== '' ? e($v) : '<mark class="todo" title="Complete in Moderation → Settings → Legal">[' . e($label) . ']</mark>';
+}
+
+function privacy_email(): string
+{
+    return setting('privacy_email', contact_email());
 }

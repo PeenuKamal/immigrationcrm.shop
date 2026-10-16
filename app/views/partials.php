@@ -126,6 +126,8 @@ function directory_body(?string $category): string
     };
     ob_start(); ?>
 <div class="directory">
+  <details class="filter-box" open>
+  <summary>Filter by category and market</summary>
   <aside class="filters" aria-label="Filters">
     <h3>Category</h3>
     <ul>
@@ -142,6 +144,8 @@ function directory_body(?string $category): string
       <?php endforeach; ?>
     </ul>
   </aside>
+  </details>
+  <script>if (matchMedia('(max-width: 959px)').matches) document.currentScript.previousElementSibling.removeAttribute('open');</script>
   <section aria-label="Results">
     <div class="section-head" style="margin-bottom:16px">
       <p class="muted" style="margin:0"><?= count($results) ?> <?= count($results) === 1 ? 'tool' : 'tools' ?></p>

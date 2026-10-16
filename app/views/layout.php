@@ -76,7 +76,7 @@ $here = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH); ?>
     </details>
   </div>
 </header>
-<main id="main"><?= $content ?></main>
+<main id="main"><?php if ($f = take_flash()): ?><div class="wrap" style="padding-top:20px"><?= notice($f) ?></div><?php endif; ?><?= $content ?></main>
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-top">

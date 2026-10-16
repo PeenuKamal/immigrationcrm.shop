@@ -59,6 +59,7 @@ Everything is in **Moderation → Settings** — paste the codes there and click
 | **LinkedIn verification** | linkedin.com/developers → Create app → Products → *Sign In with LinkedIn using OpenID Connect*. Add the redirect URL shown in Settings. Copy *Client ID* and *Client secret*. |
 | **Paid featured listings** | dashboard.stripe.com → Developers → API keys (*Secret key*). Then Developers → Webhooks → add the URL shown in Settings, event `checkout.session.completed` → copy the *Signing secret*. |
 | **Google** | search.google.com/search-console → add `https://immigrationcrm.shop` → *HTML tag* → copy only the code inside `content="…"`. Then submit `sitemap.xml`. |
+| **Legal details** for the Terms and Privacy Policy | Fill in the *Legal details* section: business name, registered address, governing law, courts, Grievance Officer and data location. Until then, those spots show as highlighted blanks. Have your lawyer approve both pages. |
 | **Bing** (also powers ChatGPT search and Copilot) | bing.com/webmasters → *Import from Google Search Console*, or paste the meta-tag code in Settings. Submit `sitemap.xml`. |
 
 Use **Send me a test email** at the bottom of Settings to check that login emails work.

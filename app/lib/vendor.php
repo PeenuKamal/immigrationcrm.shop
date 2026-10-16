@@ -72,6 +72,7 @@ function listing_form(array $f, array $selected, string $cta, ?int $id = null, ?
     <div class="field"><label for="pricing_note">Pricing <span class="muted">(optional)</span></label><input id="pricing_note" name="pricing_note" value="<?= $v('pricing_note') ?>" placeholder="From $49 per user per month"></div>
     <div class="field"><label for="logo_url">Logo image link <span class="muted">(optional)</span></label><input id="logo_url" name="logo_url" type="url" value="<?= $v('logo_url') ?>" placeholder="https://…/logo.png"></div>
   </div>
+  <p class="small muted">By submitting, you confirm you're authorised to manage this product's listing and agree to the <a href="/terms#vendors" target="_blank">vendor terms</a>.</p>
   <button class="btn"><?= e($cta) ?></button>
 </form>
 <?php

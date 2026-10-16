@@ -8,6 +8,21 @@ if (is_post()) {
         q('UPDATE users SET name = NULLIF(?, ""), job_title = NULLIF(?, ""), company = NULLIF(?, "") WHERE id = ?',
             [mb_substr(post('name'), 0, 80), mb_substr(post('job_title'), 0, 80), mb_substr(post('company'), 0, 80), $u['id']]);
         flash('Profile saved.');
+    } elseif (post('action') === 'export') {
+        header('Content-Type: application/json; charset=utf-8');
+        header('Content-Disposition: attachment; filename="immigrationcrm-shop-my-data-' . gmdate('Y-m-d') . '.json"');
+        header('Cache-Control: no-store');
+        echo json_encode(export_user_data($u), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        exit;
+    } elseif (post('action') === 'delete') {
+        if (post('confirm') !== 'DELETE') {
+            flash('Type DELETE in capital letters to confirm, then press Delete my account.', 'error');
+            redirect('/account#your-data');
+        }
+        delete_user_account($u);
+        logout_user();
+        flash('Your account and reviews have been deleted.');
+        redirect('/');
     } elseif (post('action') === 'proof') {
         $r = one('SELECT * FROM reviews WHERE id = ? AND user_id = ?', [(int)post('review_id'), $u['id']]);
         if ($r) {
@@ -96,6 +111,22 @@ $proofOk = (bool)array_filter($mine, fn($m) => $m['proof_status'] === 'APPROVED'
           <div class="field"><label for="company">Firm</label><input id="company" name="company" value="<?= e($u['company']) ?>"></div>
         </div>
         <button class="btn secondary">Save profile</button>
+      </form>
+    </section>
+
+    <section class="panel" id="your-data" aria-labelledby="data-h">
+      <h2 id="data-h" style="font-size:var(--step-2)">Your data</h2>
+      <p class="small muted">See our <a href="/privacy">Privacy Policy</a> for what we hold and why.</p>
+      <form method="post" style="margin-bottom:28px"><?= csrf_field() ?><input type="hidden" name="action" value="export">
+        <h3 style="font-size:1rem;margin-bottom:6px">Download my data</h3>
+        <p class="small muted">A file with your account details, reviews, claims and listings.</p>
+        <button class="btn secondary">Download my data</button>
+      </form>
+      <form method="post"><?= csrf_field() ?><input type="hidden" name="action" value="delete">
+        <h3 style="font-size:1rem;margin-bottom:6px">Delete my account</h3>
+        <p class="small muted">Permanently deletes your account, all <?= count($mine) ?> of your reviews and any proof files. Listings you manage stay on the site but become unclaimed. This can't be undone.</p>
+        <div class="field" style="max-width:320px"><label for="confirm">Type DELETE to confirm</label><input id="confirm" name="confirm" autocomplete="off" spellcheck="false"></div>
+        <button class="btn danger">Delete my account</button>
       </form>
     </section>
 
