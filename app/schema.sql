@@ -1,0 +1,143 @@
+CREATE TABLE IF NOT EXISTS settings (
+  name VARCHAR(64) NOT NULL PRIMARY KEY,
+  value TEXT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(190) NOT NULL UNIQUE,
+  email_domain VARCHAR(190) NOT NULL,
+  email_verified_at DATETIME NULL,
+  is_work_email TINYINT(1) NOT NULL DEFAULT 0,
+  name VARCHAR(120) NULL,
+  job_title VARCHAR(120) NULL,
+  company VARCHAR(120) NULL,
+  linkedin_sub VARCHAR(190) NULL UNIQUE,
+  linkedin_name VARCHAR(190) NULL,
+  linkedin_email VARCHAR(190) NULL,
+  linkedin_verified_at DATETIME NULL,
+  role ENUM('USER','ADMIN') NOT NULL DEFAULT 'USER',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS otp_codes (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(190) NOT NULL,
+  code_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  attempts INT NOT NULL DEFAULT 0,
+  consumed TINYINT(1) NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX otp_email_idx (email, created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS categories (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(120) NOT NULL UNIQUE,
+  name VARCHAR(190) NOT NULL,
+  description TEXT NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS software (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  slug VARCHAR(120) NOT NULL UNIQUE,
+  name VARCHAR(120) NOT NULL,
+  tagline VARCHAR(255) NOT NULL,
+  description TEXT NOT NULL,
+  website VARCHAR(255) NULL,
+  domain VARCHAR(190) NULL,
+  vendor_name VARCHAR(190) NULL,
+  logo_url VARCHAR(500) NULL,
+  pricing_note VARCHAR(255) NULL,
+  deployment VARCHAR(40) NULL,
+  regions TEXT NOT NULL,
+  audiences TEXT NOT NULL,
+  features TEXT NOT NULL,
+  status ENUM('PENDING','PUBLISHED','REJECTED') NOT NULL DEFAULT 'PENDING',
+  claimed TINYINT(1) NOT NULL DEFAULT 0,
+  owner_id INT UNSIGNED NULL,
+  featured_until DATETIME NULL,
+  rating_avg DECIMAL(3,1) NOT NULL DEFAULT 0,
+  review_count INT NOT NULL DEFAULT 0,
+  submitted_by VARCHAR(190) NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX software_status_idx (status, featured_until),
+  INDEX software_domain_idx (domain),
+  CONSTRAINT software_owner_fk FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS software_categories (
+  software_id INT UNSIGNED NOT NULL,
+  category_id INT UNSIGNED NOT NULL,
+  PRIMARY KEY (software_id, category_id),
+  CONSTRAINT sc_software_fk FOREIGN KEY (software_id) REFERENCES software(id) ON DELETE CASCADE,
+  CONSTRAINT sc_category_fk FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS listing_claims (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  software_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  note TEXT NULL,
+  status ENUM('PENDING','PUBLISHED','REJECTED') NOT NULL DEFAULT 'PENDING',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT claim_software_fk FOREIGN KEY (software_id) REFERENCES software(id) ON DELETE CASCADE,
+  CONSTRAINT claim_user_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS proof_files (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  mime VARCHAR(60) NOT NULL,
+  size INT NOT NULL,
+  data MEDIUMBLOB NOT NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  software_id INT UNSIGNED NOT NULL,
+  user_id INT UNSIGNED NOT NULL,
+  rating TINYINT NOT NULL,
+  rating_ease TINYINT NOT NULL,
+  rating_support TINYINT NOT NULL,
+  rating_value TINYINT NOT NULL,
+  rating_features TINYINT NOT NULL,
+  title VARCHAR(190) NOT NULL,
+  pros TEXT NOT NULL,
+  cons TEXT NOT NULL,
+  use_case TEXT NOT NULL,
+  reviewer_role VARCHAR(80) NOT NULL,
+  firm_size VARCHAR(40) NOT NULL,
+  usage_duration VARCHAR(40) NOT NULL,
+  recommend TINYINT(1) NOT NULL,
+  show_name TINYINT(1) NOT NULL DEFAULT 0,
+  verified_email TINYINT(1) NOT NULL DEFAULT 0,
+  verified_linkedin TINYINT(1) NOT NULL DEFAULT 0,
+  proof_file_id INT UNSIGNED NULL,
+  proof_status ENUM('NONE','PENDING','APPROVED','REJECTED') NOT NULL DEFAULT 'NONE',
+  status ENUM('AWAITING_VERIFICATION','PENDING_PROOF','PENDING_ADMIN','PUBLISHED','REJECTED') NOT NULL DEFAULT 'AWAITING_VERIFICATION',
+  reject_reason VARCHAR(500) NULL,
+  vendor_response TEXT NULL,
+  published_at DATETIME NULL,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY review_one_per_user (software_id, user_id),
+  INDEX review_status_idx (status, published_at),
+  CONSTRAINT review_software_fk FOREIGN KEY (software_id) REFERENCES software(id) ON DELETE CASCADE,
+  CONSTRAINT review_user_fk FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT review_proof_fk FOREIGN KEY (proof_file_id) REFERENCES proof_files(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS payments (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  software_id INT UNSIGNED NOT NULL,
+  stripe_session_id VARCHAR(190) NOT NULL UNIQUE,
+  amount_cents INT NOT NULL,
+  currency VARCHAR(10) NOT NULL,
+  months INT NOT NULL,
+  status VARCHAR(20) NOT NULL DEFAULT 'pending',
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT payment_software_fk FOREIGN KEY (software_id) REFERENCES software(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
