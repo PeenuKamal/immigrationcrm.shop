@@ -17,7 +17,7 @@ Built in plain PHP 8.1+ and MySQL, so it runs on ordinary Hostinger web hosting.
 - Each has a direct answer at the top, a ranked list with reasons, a buying checklist, the country's regulatory context (CICC/IRCC, USCIS/EOIR, SRA/Immigration Advice Authority, OMARA/Home Affairs), the ranking method, FAQs, Article + ItemList + FAQPage schema, and a Markdown version.
 
 **Practitioners**
-- 39 starter listings across 6 categories; search, filter by market, sort by rating.
+- 40 starter listings across 6 categories; search, filter by market, sort by rating.
 - **Compare any 2–4 products side by side**, from any category: verified ratings, sub-ratings, recommend rate, markets, audiences, every listed feature, pricing, recent pros and cons.
 - **Verified reviews only:** work-email code (Gmail, Yahoo, Outlook and disposable inboxes refused) **plus** LinkedIn sign-in or a moderator-checked proof-of-use upload. No self-reviews; one review per person per product.
 
@@ -63,7 +63,7 @@ app/                 (blocked from the web)
   lib/               database, sign-in, email (built-in SMTP), reviews, SEO, comparisons, Stripe
   views/             layout and shared pieces
   schema.sql         database tables
-  seed-data.json     the 39 starter listings
+  seed-data.json     the 40 starter listings
 config.php           created by install.php — database password and secret (never in Git)
 ```
 

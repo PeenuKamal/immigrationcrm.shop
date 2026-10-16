@@ -29,7 +29,11 @@ require APP . '/views/partials.php';
 
 // Apply database changes automatically after an update.
 if (setting('schema_version') !== SCHEMA_VERSION) {
-    run_schema();
+    try {
+        run_schema();
+    } catch (Throwable $ex) {
+        error_log('[upgrade] ' . $ex->getMessage()); // never take the site down over an upgrade step
+    }
     settings_all(true);
 }
 

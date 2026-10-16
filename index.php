@@ -101,7 +101,13 @@ try {
 } catch (Throwable $ex) {
     error_log((string)$ex);
     if (!headers_sent()) http_response_code(500);
-    echo !empty($GLOBALS['CONFIG']['debug'])
-        ? '<pre>' . e((string)$ex) . '</pre>'
-        : '<!doctype html><title>Something went wrong</title><p style="font-family:sans-serif;padding:40px">Something went wrong on our side. Refresh the page in a moment.</p>';
+    $isAdmin = false;
+    try { $cu = current_user(); $isAdmin = $cu && in_array(strtolower($cu['email']), admin_emails(), true); } catch (Throwable) {}
+    if (!empty($GLOBALS['CONFIG']['debug'])) {
+        echo '<pre>' . e((string)$ex) . '</pre>';
+    } elseif ($isAdmin) {
+        echo '<!doctype html><title>Something went wrong</title><div style="font-family:sans-serif;padding:40px;max-width:900px"><p>Something went wrong on our side. Only admins see the details below — send them to your developer.</p><pre style="white-space:pre-wrap;background:#f4f5f9;padding:16px;border-radius:8px">' . e($ex->getMessage() . ' in ' . basename($ex->getFile()) . ':' . $ex->getLine()) . '</pre><p><a href="/">Back to the home page</a></p></div>';
+    } else {
+        echo '<!doctype html><title>Something went wrong</title><p style="font-family:sans-serif;padding:40px">Something went wrong on our side. Refresh the page in a moment. <a href="/">Back to the home page</a></p>';
+    }
 }

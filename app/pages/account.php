@@ -5,7 +5,7 @@ $meta = meta(['title' => 'My account', 'description' => 'Your verification statu
 if (is_post()) {
     check_csrf();
     if (post('action') === 'profile') {
-        q('UPDATE users SET name = NULLIF(?, ""), job_title = NULLIF(?, ""), company = NULLIF(?, "") WHERE id = ?',
+        q('UPDATE users SET name = NULLIF(?, \'\'), job_title = NULLIF(?, \'\'), company = NULLIF(?, \'\') WHERE id = ?',
             [mb_substr(post('name'), 0, 80), mb_substr(post('job_title'), 0, 80), mb_substr(post('company'), 0, 80), $u['id']]);
         flash('Profile saved.');
     } elseif (post('action') === 'export') {

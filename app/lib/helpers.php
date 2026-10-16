@@ -116,12 +116,12 @@ function clip(string $text, int $max = 160): string
     return rtrim($cut, ' ,;:.') . '…';
 }
 
-function join_names(array $xs): string
+function join_names(array $xs, string $last = 'and'): string
 {
     $xs = array_values($xs);
     $n = count($xs);
     if ($n <= 1) return implode('', $xs);
-    return implode(', ', array_slice($xs, 0, -1)) . ' and ' . $xs[$n - 1];
+    return implode(', ', array_slice($xs, 0, -1)) . " $last " . $xs[$n - 1];
 }
 
 function lcfirst_tagline(string $t): string

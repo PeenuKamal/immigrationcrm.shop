@@ -38,7 +38,7 @@ If Hostinger says the folder isn't empty: open **Files → File Manager → publ
    - the email password for `otp@immigrationcrm.shop`
 3. Click **Set up my site**.
 
-The page creates everything, adds the 39 starter listings, and switches itself off.
+The page creates everything, adds the 40 starter listings, and switches itself off.
 
 ## Step 4 — Sign in as admin
 

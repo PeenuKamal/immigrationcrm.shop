@@ -1,18 +1,28 @@
 <?php
 declare(strict_types=1);
 
-const SCHEMA_VERSION = '1';
+const SCHEMA_VERSION = '2';
+
+/** Listings added to the starter directory in later versions; added once on upgrade. */
+const SEED_ADDITIONS = ['2' => ['ImmiPractice']];
 
 /** Creates any missing tables. Safe to run on every upgrade. */
 function run_schema(): void
 {
     $sql = file_get_contents(APP . '/schema.sql');
     foreach (array_filter(array_map('trim', explode(';', $sql))) as $stmt) db()->exec($stmt);
+    $from = setting('schema_version');
+    if ($from !== '' && $from !== null) {
+        // Existing site: add only the listings introduced since its version.
+        $names = [];
+        foreach (SEED_ADDITIONS as $v => $list) if (version_compare((string)$v, (string)$from, '>')) $names = array_merge($names, $list);
+        if ($names) seed_directory($names);
+    }
     save_setting('schema_version', SCHEMA_VERSION);
 }
 
 /** Adds the starter categories and listings. Skips anything that already exists. */
-function seed_directory(): int
+function seed_directory(?array $only = null): int
 {
     $data = json_decode(file_get_contents(APP . '/seed-data.json'), true);
     $catIds = [];
@@ -26,6 +36,7 @@ function seed_directory(): int
     }
     $added = 0;
     foreach ($data['software'] as $s) {
+        if ($only !== null && !in_array($s['name'], $only, true)) continue;
         $slug = slugify($s['name']);
         if (val('SELECT id FROM software WHERE slug = ?', [$slug])) continue;
         q("INSERT INTO software (slug, name, tagline, description, website, domain, vendor_name, deployment, regions, audiences, features, status)

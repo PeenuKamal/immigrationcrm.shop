@@ -50,7 +50,7 @@ $meta = meta([
         <h2 id="ranking-h">The full ranking</h2>
         <ol class="listing-rows" style="margin-top:20px">
           <?php foreach ($ranked as $i => $r):
-            $why = '<ul class="why">' . implode('', array_map(fn($w) => '<li>✓ ' . e($w) . '</li>', $r['why'])) . ($r['miss'] ? '<li class="miss">' . e($r['miss']) . '</li>' : '') . '</ul>';
+            $why = '<ul class="why">' . implode('', array_map(fn($w) => '<li>✓ ' . e($w) . '</li>', $r['why'])) . '</ul>';
             echo listing_row($r['s'], [], $i + 1, $why);
           endforeach; ?>
         </ol>

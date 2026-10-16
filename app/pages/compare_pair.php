@@ -26,7 +26,7 @@ $others = array_slice(array_values(array_filter(competitors_of((int)$items[0]['s
 $crumbs = [['Home', '/'], ['Compare', '/compare'], [$t, $canonical]];
 $cols = count($items) + 1;
 $fmt = fn($v, $has) => $has ? number_format((float)$v, 1) : '—';
-$yes = fn(bool $v) => $v ? '<td class="yes">✓ Yes</td>' : '<td class="no">—</td>';
+$yes = fn(bool $v) => $v ? '<td class="yes">Yes</td>' : '<td class="no">—</td>';
 
 $meta = meta([
     'title' => "$t: side-by-side comparison (" . year() . ')',
@@ -96,8 +96,11 @@ $meta = meta([
             <div><h4>Most recent pros</h4><ul><?php foreach ($pros as $l): ?><li><?= e($l) ?></li><?php endforeach; ?></ul></div>
             <div class="cons"><h4>Most recent cons</h4><ul><?php foreach ($cons as $l): ?><li><?= e($l) ?></li><?php endforeach; ?></ul></div>
           </div>
-        <?php else: ?><p class="muted small">No verified reviews yet.</p><?php endif; ?>
-        <a href="/software/<?= e($i['s']['slug']) ?>#reviews-h">Read all <?= e($i['s']['name']) ?> reviews</a>
+          <a href="/software/<?= e($i['s']['slug']) ?>#reviews-h">Read all <?= e($i['s']['name']) ?> reviews</a>
+        <?php else: ?>
+          <div class="empty-mini"><?= icon('clock', 20) ?><p>No verified reviews yet. If your firm uses <?= e($i['s']['name']) ?>, you can be the first.</p></div>
+          <a class="btn green small" href="/software/<?= e($i['s']['slug']) ?>/review">Review <?= e($i['s']['name']) ?></a>
+        <?php endif; ?>
       </div>
       <?php endforeach; ?>
     </div>
@@ -110,7 +113,7 @@ $meta = meta([
     <h2 id="more-cmp" style="font-size:var(--step-2)">More comparisons</h2>
     <ul class="link-grid">
       <?php foreach ($others as $o) foreach ($items as $i): ?><li><a href="<?= e(compare_path([$i['s']['slug'], $o['slug']])) ?>"><?= e("{$i['s']['name']} vs {$o['name']}") ?></a></li><?php endforeach; ?>
-      <?php if (count($items) < MAX_COMPARE): ?><li><a href="<?= e(compare_path(array_merge($slugs, [$others[0]['slug']]))) ?>">Add <?= e($others[0]['name']) ?> to this comparison</a></li><?php endif; ?>
+      <?php if (count($items) < MAX_COMPARE): ?><li><a class="add" href="<?= e(compare_path(array_merge($slugs, [$others[0]['slug']]))) ?>">Add <?= e($others[0]['name']) ?> to this comparison</a></li><?php endif; ?>
     </ul>
     <p style="margin-top:16px"><a href="/compare">Build your own comparison</a></p>
   </section>

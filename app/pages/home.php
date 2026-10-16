@@ -127,7 +127,18 @@ $meta = meta([
     </ul>
   </section>
 
-  <section class="section"><?= faq_html($faqs) ?></section>
+  <section class="section faq-layout">
+    <?= faq_html($faqs) ?>
+    <aside class="panel help-card" aria-label="Where to start">
+      <h2>Not sure where to start?</h2>
+      <p class="muted">Most practices pick from three or four tools. These pages get you to a shortlist fast.</p>
+      <ul class="help-links">
+        <li><a href="/best/canada"><?= icon('globe', 18) ?><span><strong>Best immigration software in Canada</strong><small>Ranked for RCICs and lawyers</small></span></a></li>
+        <li><a href="/compare"><?= icon('compare', 18) ?><span><strong>Compare tools side by side</strong><small>Any two to four products</small></span></a></li>
+        <li><a href="/how-we-verify"><?= icon('shield', 18) ?><span><strong>How we verify reviews</strong><small>Work email plus LinkedIn or proof</small></span></a></li>
+      </ul>
+    </aside>
+  </section>
 
   <section class="section">
     <div class="cta-band">

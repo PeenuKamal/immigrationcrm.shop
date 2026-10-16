@@ -36,7 +36,7 @@ if (is_post() && !$blocker) {
     }
     if (!$error) {
         if ($f['job_title'] || $f['company']) {
-            q('UPDATE users SET job_title = COALESCE(NULLIF(?, ""), job_title), company = COALESCE(NULLIF(?, ""), company) WHERE id = ?', [mb_substr($f['job_title'], 0, 120), mb_substr($f['company'], 0, 120), $u['id']]);
+            q('UPDATE users SET job_title = COALESCE(NULLIF(?, \'\'), job_title), company = COALESCE(NULLIF(?, \'\'), company) WHERE id = ?', [mb_substr($f['job_title'], 0, 120), mb_substr($f['company'], 0, 120), $u['id']]);
         }
         q('INSERT INTO reviews (software_id, user_id, rating, rating_ease, rating_support, rating_value, rating_features, title, pros, cons, use_case,
             reviewer_role, firm_size, usage_duration, recommend, show_name, verified_email, verified_linkedin, proof_file_id, proof_status)
@@ -108,8 +108,8 @@ $sel = function (string $name, array $opts) use ($f) {
         <input id="proof" name="proof" type="file" accept="image/png,image/jpeg,image/webp,application/pdf">
       </div>
       <div class="field checks" style="display:grid;gap:8px">
-        <label><input type="checkbox" name="show_name"> Show my name and firm on the review</label>
-        <label><input type="checkbox" name="consent"> This is my own honest experience from the last 24 months. I'm not employed by, paid by or connected to the vendor or a competitor, I haven't been offered anything for this review, and it follows the <a href="/terms#guidelines" target="_blank">review guidelines</a>.</label>
+        <label><input type="checkbox" name="show_name"><span>Show my name and firm on the review</span></label>
+        <label><input type="checkbox" name="consent"><span>This is my own honest experience from the last 24 months. I'm not employed by, paid by or connected to the vendor or a competitor, I haven't been offered anything for this review, and it follows the <a href="/terms#guidelines" target="_blank">review guidelines</a>.</span></label>
       </div>
       <button class="btn stamp">Submit review</button>
     </form>

@@ -28,7 +28,7 @@ if (is_post()) {
         }
     } elseif ($action === 'respond') {
         $r = one('SELECT id FROM reviews WHERE id = ? AND software_id = ?', [(int)post('review_id'), $id]);
-        if ($r) q('UPDATE reviews SET vendor_response = NULLIF(?, "") WHERE id = ?', [mb_substr(post('response'), 0, 1500), $r['id']]);
+        if ($r) q('UPDATE reviews SET vendor_response = NULLIF(?, \'\') WHERE id = ?', [mb_substr(post('response'), 0, 1500), $r['id']]);
         flash('Response saved.');
         redirect("/vendor/$id#reviews");
     } elseif ($action === 'feature') {

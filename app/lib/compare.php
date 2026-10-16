@@ -67,20 +67,21 @@ function compare_faqs(array $items): array
 {
     $names = array_map(fn($i) => $i['s']['name'], $items);
     $title = join_names($names);
+    $either = join_names($names, 'or');
     $faqs = [];
     $reviewed = array_values(array_filter($items, fn($i) => (int)$i['s']['review_count'] > 0));
     if (count($reviewed) >= 2) {
         usort($reviewed, fn($a, $b) => $b['s']['rating_avg'] <=> $a['s']['rating_avg']);
         $parts = array_map(fn($i) => sprintf('%s averages %.1f/5 from %d verified review%s', $i['s']['name'], $i['s']['rating_avg'], $i['s']['review_count'], $i['s']['review_count'] > 1 ? 's' : ''), $reviewed);
-        $faqs[] = ["Which is rated higher: $title?", 'On ImmigrationCRM.shop, ' . implode('; ', $parts) . ". {$reviewed[0]['s']['name']} currently has the highest average. Every review comes from a practitioner with a verified work email plus LinkedIn or proof of use."];
+        $faqs[] = ["Which is rated higher: $either?", 'On ImmigrationCRM.shop, ' . implode('; ', $parts) . ". {$reviewed[0]['s']['name']} currently has the highest average. Every review comes from a practitioner with a verified work email plus LinkedIn or proof of use."];
     } else {
-        $faqs[] = ["Which is better, $title?", "There aren't enough verified reviews yet to compare ratings. The right choice depends on your market and practice type: " . implode('; ', array_map(fn($i) => $i['s']['name'] . ' is ' . lcfirst_tagline($i['s']['tagline']), $items)) . '.'];
+        $faqs[] = ["Which is better: $either?", "There aren't enough verified reviews yet to compare ratings. The right choice depends on your market and practice type: " . implode('; ', array_map(fn($i) => $i['s']['name'] . ' is ' . lcfirst_tagline($i['s']['tagline']), $items)) . '.'];
     }
-    foreach (['Canada', 'USA', 'Australia', 'India', 'UK'] as $m) {
+    foreach (['Canada' => 'Canada', 'USA' => 'the USA', 'Australia' => 'Australia', 'India' => 'India', 'UK' => 'the UK'] as $m => $inM) {
         $yes = array_map(fn($i) => $i['s']['name'], array_filter($items, fn($i) => in_array($m, json_list($i['s']['regions']), true)));
         if ($yes && count($yes) < count($items)) {
             $no = array_diff($names, $yes);
-            $faqs[] = ["Which of $title supports immigration work in $m?", join_names($yes) . (count($yes) === 1 ? ' lists ' : ' list ') . "$m as a market served. " . join_names($no) . (count($no) === 1 ? " doesn't" : " don't") . " list $m."];
+            $faqs[] = ["Which of $either supports immigration work in $inM?", join_names($yes) . (count($yes) === 1 ? ' lists ' : ' list ') . "$inM as a market served. " . join_names($no) . (count($no) === 1 ? " doesn't" : " don't") . " list $inM."];
         }
     }
     $has = fn(array $i, string $field, string $rx) => (bool)preg_grep($rx, json_list($i['s'][$field]));

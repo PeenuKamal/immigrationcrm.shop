@@ -185,7 +185,7 @@ $decide = function (string $action, int $id, bool $reason = false, string $rejec
         <?= $field('admin_emails', 'Admin emails', 'Separate several with commas.') ?>
         <?= $field('contact_email', 'Contact email shown on the site') ?>
       </div>
-      <div class="field checks"><label><input type="checkbox" name="require_admin_approval" value="1"<?= $st['require_admin_approval'] === '1' ? ' checked' : '' ?>> Hold every review for my approval, even when fully verified</label></div>
+      <div class="field checks"><label><input type="checkbox" name="require_admin_approval" value="1"<?= $st['require_admin_approval'] === '1' ? ' checked' : '' ?>><span>Hold every review for my approval, even when fully verified</span></label></div>
     </section>
     <section class="panel"><h2 style="font-size:var(--step-2)">Email (login codes)</h2>
       <div class="grid-2">
