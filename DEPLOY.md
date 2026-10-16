@@ -1,10 +1,15 @@
-# Deploying immigrationcrm.shop on your own server
+# Deploying immigrationcrm.shop
 
-This guide assumes a Linux VPS (for example a Hostinger VPS) running **Ubuntu 22.04 or 24.04**, with the domain **immigrationcrm.shop** managed in Hostinger's hPanel.
+Two ways to run it:
 
-> **What kind of server?** The site is a Node.js app with a PostgreSQL database, so it needs a VPS (or any plan that can run Node.js 20+ and PostgreSQL). Hostinger's ordinary shared web hosting, built for PHP/WordPress sites, can't run it.
+- **Option A — Hostinger Node.js Web App** (deploy from GitHub in hPanel, no terminal). The database comes from Supabase, because Hostinger's web and cloud plans don't include PostgreSQL. See [HOSTINGER.md](HOSTINGER.md).
+- **Option B — your own VPS** (Ubuntu + Nginx + PM2, everything on one server) — the rest of this file.
 
-Time needed: about 45 minutes. Commands are copy-paste; run them over SSH.
+---
+
+# Option B: VPS
+
+This assumes a Linux VPS (for example a Hostinger VPS) running **Ubuntu 22.04 or 24.04**, with the domain **immigrationcrm.shop** managed in Hostinger's hPanel. Time needed: about 45 minutes. Commands are copy-paste; run them over SSH.
 
 ---
 
@@ -55,9 +60,6 @@ mkdir -p /var/www && cd /var/www
 git clone https://github.com/PeenuKamal/immigrationcrm.shop.git immigrationcrm
 cd immigrationcrm
 
-# Private folder for proof-of-use uploads
-mkdir -p /var/lib/immigrationcrm/uploads && chmod 700 /var/lib/immigrationcrm/uploads
-
 cp .env.example .env
 nano .env
 ```
@@ -82,9 +84,7 @@ chmod 600 .env
 
 ```bash
 npm ci
-npm run db:push      # creates the tables
-npm run db:seed      # adds 6 categories and 39 starter listings (safe to re-run)
-npm run build
+npm run build        # on first start the site creates its tables and adds the 39 starter listings
 pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup          # run the command it prints, so the site restarts after a reboot
@@ -187,9 +187,8 @@ No email? Run `pm2 logs immigrationcrm --lines 50` to see the error. The usual c
 cd /var/www/immigrationcrm
 git pull
 npm ci
-npm run db:push
 npm run build
-pm2 reload immigrationcrm
+pm2 reload immigrationcrm    # database changes are applied automatically on start
 ```
 
 After editing `.env` only: `pm2 reload immigrationcrm --update-env`.
@@ -203,20 +202,18 @@ mkdir -p /var/backups/immigrationcrm
 ( crontab -l 2>/dev/null; echo '30 2 * * * sudo -u postgres pg_dump immigrationcrm | gzip > /var/backups/immigrationcrm/db-$(date +\%F).sql.gz && find /var/backups/immigrationcrm -mtime +14 -delete' ) | crontab -
 ```
 
-Also back up `/var/lib/immigrationcrm/uploads` and your `.env`.
+Proof-of-use uploads are stored in the database, so this backup covers them. Also keep a copy of your `.env`.
 
 ---
 
-## Option B: Docker
+## Docker (alternative to PM2 on a VPS)
 
 If you prefer Docker, install Docker on the server, then:
 
 ```bash
 git clone https://github.com/PeenuKamal/immigrationcrm.shop.git immigrationcrm && cd immigrationcrm
 cp .env.example .env && nano .env            # also add a line: POSTGRES_PASSWORD=choose-one
-docker compose up -d --build
-docker compose exec web npx drizzle-kit push --force
-docker compose exec web npx tsx db/seed.ts
+docker compose up -d --build     # tables and starter listings are created automatically
 ```
 
 Then follow step 6 (Nginx and HTTPS) as above — the app listens on `127.0.0.1:3000`.

@@ -1,17 +1,21 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
+import { poolConfig } from "./connection";
 
 const globalForDb = globalThis as unknown as { pool?: Pool };
 
-const pool =
-  globalForDb.pool ??
-  new Pool({
-    connectionString: process.env.DATABASE_URL,
-    max: 5,
-    ssl: process.env.DATABASE_URL?.includes("sslmode=require") ? { rejectUnauthorized: false } : undefined,
-  });
-if (process.env.NODE_ENV !== "production") globalForDb.pool = pool;
+function makePool() {
+  try {
+    return new Pool(poolConfig(5));
+  } catch {
+    // No database configured yet (e.g. during `next build`). Queries will fail with a clear error later.
+    return new Pool({ max: 1 });
+  }
+}
+
+const pool = globalForDb.pool ?? makePool();
+globalForDb.pool = pool;
 
 export const db = drizzle(pool, { schema });
 export * from "./schema";

@@ -9,6 +9,7 @@ import {
   primaryKey,
   uniqueIndex,
   index,
+  customType,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { randomUUID } from "crypto";
@@ -151,6 +152,17 @@ export const reviews = pgTable(
     index("review_status_idx").on(t.status, t.publishedAt),
   ]
 );
+
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({ dataType: () => "bytea" });
+
+// Proof-of-use files live in the database so they survive redeploys on any host. Only admins can read them.
+export const proofFiles = pgTable("proof_files", {
+  id: id(),
+  mime: text("mime").notNull(),
+  size: integer("size").notNull(),
+  data: bytea("data").notNull(),
+  createdAt: created(),
+});
 
 export const payments = pgTable("payments", {
   id: id(),

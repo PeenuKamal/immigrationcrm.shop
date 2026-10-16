@@ -2,7 +2,7 @@
 
 A verified-review directory for immigration software: immigration CRMs, immigration case management, law practice management, AI tools for immigration law and corporate immigration platforms.
 
-**To put it online, follow [DEPLOY.md](DEPLOY.md).**
+**To put it online:** Hostinger Node.js Web App → [HOSTINGER.md](HOSTINGER.md) · your own VPS → [DEPLOY.md](DEPLOY.md).
 
 ## What it does
 
@@ -54,8 +54,7 @@ Next.js 15 (App Router, server actions) · PostgreSQL + Drizzle ORM · Nodemaile
 ```bash
 npm install
 cp .env.example .env     # set DATABASE_URL and SESSION_SECRET at minimum
-npm run db:push && npm run db:seed
-npm run dev              # http://localhost:3000
+npm run dev              # http://localhost:3000 — tables and starter listings are created on first start
 ```
 
 Without SMTP settings, login codes print in the terminal instead of being emailed.
