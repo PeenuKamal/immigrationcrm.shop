@@ -32,10 +32,12 @@ $meta = meta([
     ],
 ]);
 ?>
+<?= page_band($crumbs, 'Best ' . e($seoLower), e($c['description']), updated_line(now())) ?>
 <div class="wrap">
-  <?= breadcrumbs_html($crumbs) ?>
-  <div class="page-head"><h1>Best <?= e($seoLower) ?></h1><p><?= e($c['description']) ?></p></div>
-  <div class="summary-box"><p><?= e($faqs[0][1]) ?></p></div>
+  <div class="answer"><span class="label"><?= icon('sparkles', 14) ?>Quick answer</span><p><?= e($faqs[0][1]) ?></p></div>
+  <?php $guides = array_filter(COUNTRIES, fn($cc) => (bool)rank_for_country(country(array_search($cc, COUNTRIES, true)), $c['slug'])); if ($guides): ?>
+  <div class="tabs" aria-label="By country"><?php foreach ($guides as $cs => $cc): ?><a class="chip" href="<?= e(guide_path($cs, $c['slug'])) ?>"><span class="flag <?= $cc['class'] ?>" style="width:22px;height:22px;border-radius:6px;font-size:9px"><?= $cc['code'] ?></span>Best in <?= e($cc['short'] ?? $cc['name']) ?></a><?php endforeach; ?></div>
+  <?php endif; ?>
   <?= directory_body($c['slug']) ?>
   <?php if ($pairs): ?>
   <section class="section" aria-labelledby="cat-cmp">

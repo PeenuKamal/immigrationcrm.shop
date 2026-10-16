@@ -8,6 +8,14 @@ Built in plain PHP 8.1+ and MySQL, so it runs on ordinary Hostinger web hosting.
 
 ## Features
 
+**Brand**
+- Logo: shield (trust) + check (verified) + golden sparkle and flight path (premium, the immigration journey). Files in `assets/` — `logo.svg`, `logo-white.svg`, `logo-mark.svg`, app icons and favicon. Source script: `assets/brand/build_logo.py`.
+- Colours: royal blue `#2747D4` and navy `#0E1A47` for trust, gold `#F6B93B` for premium, green `#0E9F6E` for verified. Fonts: Poppins (headings) and Inter (text), self-hosted.
+
+**Country buying guides** — built to be the answer when someone asks ChatGPT, Perplexity, Gemini or Google “what is the best immigration CRM in Canada?”
+- `/best` index, a hub per country (`/best/canada`) and a ranked guide per category and country (`/best/immigration-crm/canada`) for Canada, the USA, the UK, Australia and India.
+- Each has a direct answer at the top, a ranked list with reasons, a buying checklist, the country's regulatory context (CICC/IRCC, USCIS/EOIR, SRA/Immigration Advice Authority, OMARA/Home Affairs), the ranking method, FAQs, Article + ItemList + FAQPage schema, and a Markdown version.
+
 **Practitioners**
 - 39 starter listings across 6 categories; search, filter by market, sort by rating.
 - **Compare any 2–4 products side by side**, from any category: verified ratings, sub-ratings, recommend rate, markets, audiences, every listed feature, pricing, recent pros and cons.

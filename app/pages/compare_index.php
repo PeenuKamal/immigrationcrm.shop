@@ -12,9 +12,8 @@ $meta = meta([
 ]);
 $initial = get('add');
 ?>
+<?= page_band($crumbs, 'Compare immigration software', 'Pick any two to four tools — from any category — and see verified ratings, features, markets and real pros and cons side by side.') ?>
 <div class="wrap">
-  <?= breadcrumbs_html($crumbs) ?>
-  <div class="page-head"><h1>Compare immigration software</h1><p>Pick any two to four tools — from any category — and see verified ratings, features, markets and real pros and cons side by side.</p></div>
 
   <div class="compare-picker panel" id="picker" data-initial="<?= e($initial) ?>">
     <div>

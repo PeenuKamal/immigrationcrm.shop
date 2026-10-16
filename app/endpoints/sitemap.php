@@ -8,6 +8,11 @@ $urls = [
     ['/how-we-verify', null, 'monthly', '0.5'], ['/about', null, 'monthly', '0.5'], ['/list-your-software', null, 'monthly', '0.4'],
 ];
 foreach (categories_with_counts() as $c) $urls[] = ["/category/{$c['slug']}", $newest, 'daily', '0.9'];
+$urls[] = ['/best', $newest, 'weekly', '0.9'];
+foreach (array_keys(COUNTRIES) as $cs) {
+    $urls[] = [guide_path($cs), $newest, 'weekly', '0.9'];
+    foreach (country_categories(country($cs)) as $x) $urls[] = [guide_path($cs, $x['cat']['slug']), $newest, 'weekly', '0.9'];
+}
 foreach ($list as $s) $urls[] = ["/software/{$s['slug']}", $s['updated_at'], 'weekly', '0.8'];
 foreach ($list as $s) $urls[] = ["/software/{$s['slug']}/alternatives", $s['updated_at'], 'weekly', '0.7'];
 foreach (popular_pairs() as $p) $urls[] = [compare_path([$p['a'], $p['b']]), max($mod[$p['a']] ?? $newest, $mod[$p['b']] ?? $newest), 'weekly', '0.6'];

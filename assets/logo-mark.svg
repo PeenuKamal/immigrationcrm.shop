@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="ImmigrationCRM.shop"><g transform="translate(0 0) scale(1.0)">
+  <defs>
+    <linearGradient id="mk-g" x1="12" y1="4" x2="52" y2="60" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#3B63F3"/><stop offset="1" stop-color="#1B2A80"/></linearGradient>
+    <linearGradient id="mk-s" x1="44" y1="2" x2="60" y2="20" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD66B"/><stop offset="1" stop-color="#F2A516"/></linearGradient>
+  </defs>
+  <path d="M32 4.5 L51.5 11.2 C53.4 11.9 54.6 13.6 54.6 15.6 V29.5 C54.6 44.2 45.3 54.6 32 59.6 C18.7 54.6 9.4 44.2 9.4 29.5 V15.6 C9.4 13.6 10.6 11.9 12.5 11.2 Z" fill="url(#mk-g)"/>
+  <path d="M32 9.2 L49.6 15.2 V29.5 C49.6 33 49 36.2 47.9 39.1 C43 30 34 24.5 15 24 V15.2 Z" fill="#FFFFFF" opacity="0.08"/>
+  <path d="M20.5 32.5 L28.6 40.6 L44.5 24.2" fill="none" stroke="#FFFFFF" stroke-width="5.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M5.2 47.5 C-1.5 33 4.5 14.5 22 6.6 C31 2.6 40.5 2.6 47 5.4" fill="none" stroke="url(#mk-s)" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="0.01 5.2"/>
+  <path d="M52 1.5 C52.9 6.9 54.9 8.9 60.3 9.8 C54.9 10.7 52.9 12.7 52 18.1 C51.1 12.7 49.1 10.7 43.7 9.8 C49.1 8.9 51.1 6.9 52 1.5 Z" fill="url(#mk-s)" stroke="#FFFFFF" stroke-width="1.8" stroke-linejoin="round"/>
+</g></svg>

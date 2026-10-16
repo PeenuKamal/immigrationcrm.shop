@@ -34,7 +34,7 @@ $cats = categories_with_counts();
 <?php endif; if ($v = setting('bing_verification')): ?><meta name="msvalidate.01" content="<?= e($v) ?>">
 <?php endif; if ($v = setting('yandex_verification')): ?><meta name="yandex-verification" content="<?= e($v) ?>">
 <?php endif; ?>
-<meta name="theme-color" content="#0f6b5c">
+<meta name="theme-color" content="#0e1a47">
 <meta name="application-name" content="<?= e(SITE_NAME) ?>">
 <meta name="apple-mobile-web-app-title" content="<?= e(SITE_SHORT) ?>">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
@@ -45,43 +45,54 @@ $cats = categories_with_counts();
 <link rel="alternate" type="text/plain" title="llms.txt" href="/llms.txt">
 <?php if ($m['markdown']): ?><link rel="alternate" type="text/markdown" href="<?= e($m['markdown']) ?>">
 <?php endif; ?>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Public+Sans:ital,wght@0,400..700;1,400&display=swap">
+<link rel="preload" href="/assets/fonts/poppins-latin-800-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/inter-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/assets/style.css?v=<?= @filemtime(ROOT . '/assets/style.css') ?>">
 <?= json_ld(array_merge([org_ld(), website_ld()], $m['jsonld'])) ?>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="half-star"><stop offset="50%" stop-color="#0f6b5c"/><stop offset="50%" stop-color="#cdd6cf"/></linearGradient></defs></svg>
-<a href="#main" class="sr-only">Skip to content</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="half-star"><stop offset="50%" stop-color="#f6b93b"/><stop offset="50%" stop-color="#dfe3ec"/></linearGradient></defs></svg>
+<a href="#main" class="skip">Skip to content</a>
+<?php $navLinks = [['/software', 'Browse software'], ['/best', 'Best by country'], ['/compare', 'Compare'], ['/how-we-verify', 'How we verify']];
+$here = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH); ?>
 <header class="site-header">
   <div class="wrap">
-    <a href="/" class="brand" aria-label="<?= e(SITE_NAME) ?> home"><?= brand_mark() ?><span>ImmigrationCRM<span class="tld">.shop</span></span></a>
+    <a href="/" class="brand"><img src="/assets/logo.svg" alt="<?= e(SITE_NAME) ?> home" width="245" height="40"></a>
     <nav class="nav" aria-label="Main">
-      <a href="/software">Browse software</a>
-      <a href="/compare">Compare</a>
-      <a href="/how-we-verify">How we verify</a>
-      <a href="/list-your-software">List your software</a>
+      <?php foreach ($navLinks as [$href, $label]): ?><a href="<?= $href ?>"<?= str_starts_with((string)$here, $href) ? ' aria-current="page"' : '' ?>><?= e($label) ?></a><?php endforeach; ?>
       <?php if (is_admin($u)): ?><a href="/admin">Moderation</a><?php endif; ?>
       <?php if ($u): ?><a href="/account">My account</a><?php else: ?><a href="/signin">Sign in</a><?php endif; ?>
+      <a class="btn small" href="/software">Write a review</a>
     </nav>
+    <details class="menu">
+      <summary aria-label="Open menu"><?= icon('menu') ?></summary>
+      <div class="menu-panel">
+        <?php foreach ($navLinks as [$href, $label]): ?><a href="<?= $href ?>"><?= e($label) ?></a><?php endforeach; ?>
+        <a href="/list-your-software">List your software</a>
+        <?php if (is_admin($u)): ?><a href="/admin">Moderation</a><?php endif; ?>
+        <?php if ($u): ?><a href="/account">My account</a><?php else: ?><a href="/signin">Sign in</a><?php endif; ?>
+        <a class="btn" href="/software">Write a review</a>
+      </div>
+    </details>
   </div>
 </header>
 <main id="main"><?= $content ?></main>
 <footer class="site-footer">
   <div class="wrap">
-    <div class="footer-cols">
-      <div><h2>Categories</h2><ul>
-        <?php foreach ($cats as $c): ?><li><a href="/category/<?= e($c['slug']) ?>">Best <?= e(category_seo_lower($c['slug'], $c['name'])) ?></a></li><?php endforeach; ?>
+    <div class="footer-top">
+      <div>
+        <img src="/assets/logo-white.svg" alt="<?= e(SITE_NAME) ?>" width="245" height="40" loading="lazy">
+        <p style="color:#aab6dc;max-width:34ch">The independent directory of immigration software, with reviews only from verified immigration practitioners.</p>
+        <a class="btn gold small" href="/list-your-software">List your software free</a>
+      </div>
+      <div><h2>Best software by country</h2><ul>
+        <?php foreach (COUNTRIES as $slug => $c): ?><li><a href="/best/immigration-crm/<?= $slug ?>">Best immigration CRM in <?= e($c['short'] ?? $c['name']) ?></a></li><?php endforeach; ?>
       </ul></div>
-      <div><h2>Compare</h2><ul>
-        <li><a href="/compare">Compare any software</a></li>
-        <li><a href="/compare/docketwise-vs-lollylaw">Docketwise vs LollyLaw</a></li>
-        <li><a href="/compare/caseeasy-vs-maple-crm">CaseEasy vs Maple CRM</a></li>
-        <li><a href="/compare/clio-vs-mycase">Clio vs MyCase</a></li>
-        <li><a href="/compare/parley-ai-vs-visalaw-ai">Parley AI vs Visalaw.ai</a></li>
+      <div><h2>Categories</h2><ul>
+        <?php foreach ($cats as $c): ?><li><a href="/category/<?= e($c['slug']) ?>"><?= e(category_seo($c['slug'], $c['name'])) ?></a></li><?php endforeach; ?>
       </ul></div>
       <div><h2><?= e(SITE_NAME) ?></h2><ul>
+        <li><a href="/compare">Compare software</a></li>
         <li><a href="/about">About us</a></li>
         <li><a href="/how-we-verify">How we verify reviews</a></li>
         <li><a href="/vendor">For vendors</a></li>
@@ -90,7 +101,10 @@ $cats = categories_with_counts();
         <li><a href="/feed.xml">Reviews RSS feed</a></li>
       </ul></div>
     </div>
-    <span>© <?= year() ?> <?= e(SITE_NAME) ?>. Independent reviews from verified immigration practitioners.</span>
+    <div class="footer-bottom">
+      <span>© <?= year() ?> <?= e(SITE_NAME) ?>. Independent reviews from verified immigration practitioners.</span>
+      <span>Featured listings are labelled and never affect ratings.</span>
+    </div>
   </div>
 </footer>
 </body>

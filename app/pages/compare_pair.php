@@ -41,11 +41,9 @@ $meta = meta([
     ),
 ]);
 ?>
+<?= page_band($crumbs, e($t), 'Side-by-side comparison using verified practitioner reviews and listing data.', updated_line(gmdate('Y-m-d H:i:s', $updated))) ?>
 <div class="wrap">
-  <?= breadcrumbs_html($crumbs) ?>
-  <div class="page-head"><h1><?= e($t) ?></h1><p>Side-by-side comparison using verified practitioner reviews and listing data. Updated <?= e(format_date(gmdate('Y-m-d', $updated))) ?>.</p></div>
-
-  <div class="summary-box">
+  <div class="answer"><span class="label"><?= icon('sparkles', 14) ?>At a glance</span>
     <?php foreach ($items as $i): $s = $i['s']; $reg = array_slice(json_list($s['regions']), 0, 4); ?>
     <p><strong><?= e($s['name']) ?></strong> is <?= e(lcfirst_tagline($s['tagline'])) ?><?= $reg ? ', serving ' . e(implode(', ', $reg)) : '' ?>.
       <?= (int)$s['review_count'] ? sprintf('Rated %.1f/5 from %d verified review%s.', $s['rating_avg'], $s['review_count'], $s['review_count'] > 1 ? 's' : '') : 'No verified reviews yet.' ?></p>

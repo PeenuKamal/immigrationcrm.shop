@@ -126,7 +126,7 @@ function join_names(array $xs): string
 
 function lcfirst_tagline(string $t): string
 {
-    return lcfirst(rtrim($t, '.'));
+    return preg_replace_callback('/^([A-Z][a-z]+)\b/', fn($m) => strtolower($m[1]), rtrim($t, '.'));
 }
 
 function post(string $k, string $default = ''): string

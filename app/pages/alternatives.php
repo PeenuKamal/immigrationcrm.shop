@@ -20,14 +20,13 @@ $meta = meta([
     'jsonld' => [breadcrumb_ld($crumbs), item_list_ld("{$s['name']} alternatives", array_map(fn($a) => [$a['name'], "/software/{$a['slug']}"], $alts)), faq_ld($faqs)],
 ]);
 ?>
+<?= page_band($crumbs, 'Best ' . e($s['name']) . ' alternatives', count($alts) . ' tools that do the same job as ' . e($s['name']) . ', with verified reviews from immigration practitioners.', updated_line(now())) ?>
 <div class="wrap">
-  <?= breadcrumbs_html($crumbs) ?>
-  <div class="page-head"><h1><?= e($s['name']) ?> alternatives</h1><p><?= count($alts) ?> tools that do the same job as <?= e($s['name']) ?>, with verified reviews from immigration practitioners.</p></div>
-  <div class="summary-box"><p><strong><?= e($s['name']) ?></strong> is <?= e(lcfirst_tagline($s['tagline'])) ?>. The top alternatives are <?= e($top5) ?>.</p></div>
+  <div class="answer"><span class="label"><?= icon('sparkles', 14) ?>Quick answer</span><p><strong><?= e($s['name']) ?></strong> is <?= e(lcfirst_tagline($s['tagline'])) ?>. The top alternatives are <?= e($top5) ?>.</p></div>
   <ol class="listing-rows">
     <?php foreach ($alts as $a): ?>
     <li class="listing"><?= logo_box($a['name'], $a['logo_url']) ?><div>
-      <h2 style="font-size:var(--step-1);margin:0"><a href="/software/<?= e($a['slug']) ?>"><?= e($a['name']) ?></a></h2>
+      <h2><a href="/software/<?= e($a['slug']) ?>"><?= e($a['name']) ?></a></h2>
       <p class="tagline"><?= e($a['tagline']) ?></p>
       <div class="meta"><?= rating_inline((float)$a['rating_avg'], (int)$a['review_count']) ?><span><?= e(implode(', ', $cats[$a['id']] ?? [])) ?></span>
         <a class="compare-tag" href="<?= e(compare_path([$s['slug'], $a['slug']])) ?>">Compare with <?= e($s['name']) ?></a></div>

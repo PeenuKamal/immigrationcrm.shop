@@ -14,16 +14,8 @@ $meta = meta([
     'jsonld' => [breadcrumb_ld($crumbs), item_list_ld('Immigration software directory', array_map(fn($s) => [$s['name'], "/software/{$s['slug']}"], $results))],
 ]);
 ?>
+<?= page_band($crumbs, $q ? 'Results for “' . e($q) . '”' : 'All immigration software', 'Every tool used to run an immigration practice, with reviews only from verified practitioners.',
+  '<form class="search" action="/software" role="search" style="margin-top:20px"><label for="q" class="sr-only">Search software</label><input id="q" name="q" type="search" value="' . e($q) . '" placeholder="Search by name or feature"><button class="btn" type="submit">' . icon('search', 18) . 'Search</button></form>') ?>
 <div class="wrap">
-  <?= breadcrumbs_html($crumbs) ?>
-  <div class="page-head">
-    <h1><?= $q ? 'Results for “' . e($q) . '”' : 'All immigration software' ?></h1>
-    <p>Every tool used to run an immigration practice, with reviews only from verified practitioners.</p>
-    <form class="search" action="/software" role="search" style="margin-top:16px">
-      <label for="q" class="sr-only">Search software</label>
-      <input id="q" name="q" type="search" value="<?= e($q) ?>" placeholder="Search by name or feature">
-      <button class="btn" type="submit">Search</button>
-    </form>
-  </div>
   <?= directory_body(null) ?>
 </div>

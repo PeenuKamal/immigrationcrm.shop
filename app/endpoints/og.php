@@ -1,46 +1,52 @@
 <?php
-// Social share image (1200×630) for the site, products, categories and comparisons. Uses GD.
+// Branded share image (1200×630) for the site, products, categories, comparisons and guides. Uses GD.
 $eyebrow = 'Independent software reviews';
-$title = 'Immigration software, reviewed by people who file the cases';
-$subtitle = 'CRMs · case management · practice management · AI';
+$title = 'Find the right immigration software with confidence';
+$subtitle = 'Verified reviews of CRMs, case management and AI tools';
 $rating = null;
 
 if ($kind === 'software') {
     $s = software_by_slug($params[0]);
     if ($s) {
         $n = (int)$s['review_count'];
-        $eyebrow = $n ? "$n verified review" . ($n > 1 ? 's' : '') : 'Reviews, features & alternatives';
+        $eyebrow = $n ? "$n verified review" . ($n > 1 ? 's' : '') : 'Reviews · features · alternatives';
         $title = "{$s['name']} reviews";
         $subtitle = $s['tagline'];
         $rating = $n ? number_format((float)$s['rating_avg'], 1) : null;
     }
 } elseif ($kind === 'category') {
     $c = category_by_slug($params[0]);
-    if ($c) { $eyebrow = 'Best of ' . year(); $title = 'Best ' . category_seo($c['slug'], $c['name']); $subtitle = $c['description']; }
+    if ($c) { $eyebrow = 'Buyer\'s guide ' . year(); $title = 'Best ' . category_seo($c['slug'], $c['name']); $subtitle = $c['description']; }
 } elseif ($kind === 'compare') {
     $items = load_compare(parse_compare($params[0]));
-    if ($items) { $eyebrow = 'Side-by-side comparison'; $title = implode(' vs ', array_map(fn($i) => $i['s']['name'], $items)); $subtitle = 'Verified ratings, features, markets and pros & cons'; }
+    if ($items) { $eyebrow = 'Side-by-side comparison'; $title = implode(' vs ', array_map(fn($i) => $i['s']['name'], $items)); $subtitle = 'Verified ratings, features, markets, pros and cons'; }
 }
 
-if (!function_exists('imagecreatetruecolor')) {
-    header('Content-Type: image/png');
-    readfile(ROOT . '/assets/icon-512.png');
-    exit;
-}
+if (!function_exists('imagecreatetruecolor')) { header('Content-Type: image/png'); readfile(ROOT . '/assets/icon-512.png'); exit; }
 
 $W = 1200; $H = 630;
 $im = imagecreatetruecolor($W, $H);
+imagealphablending($im, true);
 imageantialias($im, true);
-$col = fn($hex) => imagecolorallocate($im, hexdec(substr($hex, 1, 2)), hexdec(substr($hex, 3, 2)), hexdec(substr($hex, 5, 2)));
-$paper = $col('#edf1ec'); $ink = $col('#172033'); $ink2 = $col('#3c4859'); $muted = $col('#5d6877'); $teal = $col('#0f6b5c');
-imagefilledrectangle($im, 0, 0, $W, $H, $paper);
-$bold = ROOT . '/assets/fonts/DejaVuSansCondensed-Bold.ttf';
-$reg = ROOT . '/assets/fonts/DejaVuSans.ttf';
+$rgb = fn($hex, $a = 0) => imagecolorallocatealpha($im, hexdec(substr($hex, 1, 2)), hexdec(substr($hex, 3, 2)), hexdec(substr($hex, 5, 2)), $a);
+// navy background with a soft blue glow top-right
+imagefilledrectangle($im, 0, 0, $W, $H, $rgb('#0e1a47'));
+for ($r = 520; $r > 0; $r -= 8) imagefilledellipse($im, 1080, 40, $r * 2, $r * 2, $rgb('#3b63f3', (int)(127 - 12 * (1 - $r / 520))));
+// dotted golden flight path
+$gold = $rgb('#f6b93b');
+for ($t = 0.0; $t <= 1.0; $t += 0.012) {
+    $x = (1 - $t) ** 3 * -40 + 3 * (1 - $t) ** 2 * $t * 380 + 3 * (1 - $t) * $t ** 2 * 860 + $t ** 3 * 1240;
+    $y = (1 - $t) ** 3 * 600 + 3 * (1 - $t) ** 2 * $t * 640 + 3 * (1 - $t) * $t ** 2 * 300 + $t ** 3 * 20;
+    imagefilledellipse($im, (int)$x, (int)$y, 5, 5, $rgb('#f6b93b', 50));
+}
+$bold = ROOT . '/assets/fonts/Poppins-Bold.ttf';
+$med = ROOT . '/assets/fonts/Poppins-Medium.ttf';
+$logo = @imagecreatefrompng(ROOT . '/assets/logo-white-og.png');
+if ($logo) imagecopyresampled($im, $logo, 64, 52, 0, 0, 391, 64, imagesx($logo), imagesy($logo));
 
 $wrap = function (string $text, string $font, float $size, int $maxW, int $maxLines) {
     $words = preg_split('/\s+/', trim($text));
-    $lines = [];
-    $cur = '';
+    $lines = []; $cur = '';
     foreach ($words as $w) {
         $try = $cur === '' ? $w : "$cur $w";
         $box = imagettfbbox($size, 0, $font, $try);
@@ -50,37 +56,28 @@ $wrap = function (string $text, string $font, float $size, int $maxW, int $maxLi
     if (count($lines) > $maxLines) { $lines = array_slice($lines, 0, $maxLines); $lines[$maxLines - 1] = rtrim($lines[$maxLines - 1], ' ,.') . '…'; }
     return $lines;
 };
+$x = 72; $maxW = $rating ? 760 : 1000;
+// eyebrow pill
+$eb = imagettfbbox(18, 0, $med, $eyebrow);
+imagefilledrectangle($im, $x, 196, $x + ($eb[2] - $eb[0]) + 36, 236, $rgb('#f6b93b', 90));
+imagettftext($im, 18, 0, $x + 18, 224, $rgb('#ffd66b'), $med, $eyebrow);
+$size = mb_strlen($title) > 44 ? 46 : 58;
+$y = 236 + $size + 36;
+foreach ($wrap($title, $bold, $size, $maxW, 3) as $line) { imagettftext($im, $size, 0, $x, $y, $rgb('#ffffff'), $bold, $line); $y += (int)($size * 1.22); }
+$y += 4;
+foreach ($wrap($subtitle, $med, 24, $maxW, 2) as $line) { imagettftext($im, 24, 0, $x, $y, $rgb('#c9d3f5'), $med, $line); $y += 36; }
 
-// brand
-imagesetthickness($im, 5);
-imageellipse($im, 94, 82, 46, 46, $teal);
-imageline($im, 84, 83, 91, 90, $teal); imageline($im, 91, 90, 104, 74, $teal);
-imagettftext($im, 26, 0, 130, 94, $ink, $bold, 'ImmigrationCRM');
-$bb = imagettfbbox(26, 0, $bold, 'ImmigrationCRM');
-imagettftext($im, 26, 0, 130 + $bb[2] - $bb[0], 94, $teal, $bold, '.shop');
-
-// text block
-$x = 72; $maxW = 800;
-imagettftext($im, 24, 0, $x, 210, $muted, $reg, $eyebrow);
-$size = mb_strlen($title) > 40 ? 48 : 60;
-$y = 210 + $size + 26;
-foreach ($wrap($title, $bold, $size, $maxW, 3) as $line) { imagettftext($im, $size, 0, $x, $y, $ink, $bold, $line); $y += (int)($size * 1.25); }
-$y += 6;
-foreach ($wrap($subtitle, $reg, 24, $maxW, 2) as $line) { imagettftext($im, 24, 0, $x, $y, $ink2, $reg, $line); $y += 36; }
-
-// stamp
-$cx = 1010; $cy = 330; $r = 115;
-for ($t = 0; $t < 8; $t++) imageellipse($im, $cx, $cy, 2 * $r - $t, 2 * $r - $t, $teal);
-imagesetthickness($im, 2);
-imageellipse($im, $cx, $cy, 2 * $r - 36, 2 * $r - 36, $teal);
-$center = function (string $txt, string $font, float $size, int $yy) use ($im, $cx, $teal) {
-    $b = imagettfbbox($size, 0, $font, $txt);
-    imagettftext($im, $size, 0, (int)($cx - ($b[2] - $b[0]) / 2), $yy, $teal, $font, $txt);
-};
-if ($rating) { $center($rating, $bold, 60, $cy + 18); $center('VERIFIED', $bold, 18, $cy + 56); }
-else { $center('VERIFIED', $bold, 30, $cy - 2); $center('REVIEWS', $bold, 30, $cy + 38); }
-
-imagettftext($im, 20, 0, $x, $H - 56, $muted, $reg, 'Every review from a verified immigration practitioner');
+if ($rating) {
+    $cx = 1010; $cy = 340;
+    imagefilledellipse($im, $cx, $cy, 260, 260, $rgb('#ffffff'));
+    imagesetthickness($im, 8);
+    imageellipse($im, $cx, $cy, 244, 244, $gold);
+    $b = imagettfbbox(70, 0, $bold, $rating);
+    imagettftext($im, 70, 0, (int)($cx - ($b[2] - $b[0]) / 2), $cy + 20, $rgb('#0e1a47'), $bold, $rating);
+    $b = imagettfbbox(18, 0, $med, 'VERIFIED RATING');
+    imagettftext($im, 18, 0, (int)($cx - ($b[2] - $b[0]) / 2), $cy + 62, $rgb('#0b7f58'), $med, 'VERIFIED RATING');
+}
+imagettftext($im, 19, 0, $x, $H - 52, $rgb('#9fb0e6'), $med, 'Every review from a verified immigration practitioner · immigrationcrm.shop');
 
 header('Content-Type: image/png');
 header('Cache-Control: public, max-age=86400');
