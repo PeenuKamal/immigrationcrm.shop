@@ -2,11 +2,14 @@
 $crumbs = [['Home', '/'], ['Best by country', '/best']];
 $items = [];
 foreach (COUNTRIES as $cs => $_) foreach (country_categories(country($cs)) as $x) $items[] = ["Best " . category_seo($x['cat']['slug'], $x['cat']['name']) . ' in ' . country($cs)['in'], guide_path($cs, $x['cat']['slug'])];
+$insight = insight('best');
+if ($insight) $insight['related'] = array_values(array_unique(array_merge($insight['related'] ?? [], articles_for('best'))));
+$faqs = insight_faqs($insight);
 $meta = meta([
     'title' => 'Best immigration software by country (' . year() . ')',
     'description' => 'Country-by-country rankings of immigration CRMs, case management, practice management and AI tools for Canada, the USA, the UK, Australia and India.',
     'path' => '/best',
-    'jsonld' => [breadcrumb_ld($crumbs), item_list_ld('Immigration software buying guides by country', $items)],
+    'jsonld' => [breadcrumb_ld($crumbs), item_list_ld('Immigration software buying guides by country', $items), $faqs ? faq_ld($faqs) : null],
 ]);
 ?>
 <?= page_band($crumbs, 'Best immigration software by country', 'Each guide ranks tools for the regulators, forms and programs of one country — with verified practitioner reviews.') ?>
@@ -20,4 +23,6 @@ $meta = meta([
     <ul class="link-grid plain"><?php foreach (country_categories($c) as $x): ?><li><a href="<?= e(guide_path($cs, $x['cat']['slug'])) ?>"><?= e(category_seo($x['cat']['slug'], $x['cat']['name'])) ?></a></li><?php endforeach; ?></ul>
   </section>
   <?php endforeach; ?>
+  <?= insight_html($insight) ?>
+  <?php if ($faqs): ?><section class="section"><?= faq_html($faqs) ?></section><?php endif; ?>
 </div>

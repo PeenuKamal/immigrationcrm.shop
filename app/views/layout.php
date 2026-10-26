@@ -53,7 +53,7 @@ $cats = categories_with_counts();
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="half-star"><stop offset="50%" stop-color="#f6b93b"/><stop offset="50%" stop-color="#dfe3ec"/></linearGradient></defs></svg>
 <a href="#main" class="skip">Skip to content</a>
-<?php $navLinks = [['/software', 'Browse software'], ['/best', 'Best by country'], ['/compare', 'Compare'], ['/how-we-verify', 'How we verify']];
+<?php $navLinks = [['/software', 'Browse software'], ['/best', 'Best by country'], ['/compare', 'Compare'], ['/blog', 'Blog'], ['/how-we-verify', 'How we verify']];
 $here = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH); ?>
 <header class="site-header">
   <div class="wrap">
@@ -93,6 +93,7 @@ $here = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH); ?>
       </ul></div>
       <div><h2><?= e(SITE_NAME) ?></h2><ul>
         <li><a href="/compare">Compare software</a></li>
+        <li><a href="/blog">Blog and buying guides</a></li>
         <li><a href="/about">About us</a></li>
         <li><a href="/how-we-verify">How we verify reviews</a></li>
         <li><a href="/vendor">For vendors</a></li>

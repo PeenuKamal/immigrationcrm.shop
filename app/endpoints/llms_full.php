@@ -7,5 +7,9 @@ foreach (categories_with_counts() as $c) $o[] = "- {$c['name']} ({$c['cnt']} too
 $o[] = '';
 $o[] = '## Country rankings';
 foreach (array_keys(COUNTRIES) as $cs) { $c = country($cs); foreach (country_categories($c) as $x) { $o[] = '### Best ' . category_seo($x['cat']['slug'], $x['cat']['name']) . ' in ' . $c['in']; foreach (array_slice($x['ranked'], 0, 5) as $i => $r) $o[] = ($i + 1) . ". {$r['s']['name']} — " . ranked_reason($r) . '.'; $o[] = 'Source: ' . url(guide_path($cs, $x['cat']['slug'])); $o[] = ''; } }
+$o[] = '## Expert answers';
+foreach (insights() as $k => $in) { $o[] = insight_md($in); $o[] = ''; }
+$o[] = '## Blog articles';
+foreach (articles() as $a) { $o[] = article_md($a, false); $o[] = ''; }
 foreach (all("SELECT * FROM software WHERE status = 'PUBLISHED' ORDER BY name") as $s) { $o[] = software_md($s, false, 10); $o[] = ''; }
 echo implode("\n", $o);

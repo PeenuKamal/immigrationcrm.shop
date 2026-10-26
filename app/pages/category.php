@@ -45,5 +45,6 @@ $meta = meta([
     <ul class="link-grid"><?php foreach ($pairs as $p): ?><li><a href="<?= e(compare_path([$p['a'], $p['b']])) ?>"><?= e("{$p['an']} vs {$p['bn']}") ?></a></li><?php endforeach; ?></ul>
   </section>
   <?php endif; ?>
+  <?php if ($reads = articles_for('category:' . $c['slug'])): ?><section class="section" style="padding-top:32px"><?= related_articles_html($reads, 'Guides for choosing ' . category_seo_lower($c['slug'], $c['name'])) ?></section><?php endif; ?>
   <section class="section"><?= faq_html($faqs) ?></section>
 </div>

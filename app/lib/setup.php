@@ -1,10 +1,13 @@
 <?php
 declare(strict_types=1);
 
-const SCHEMA_VERSION = '2';
+const SCHEMA_VERSION = '3';
 
 /** Listings added to the starter directory in later versions; added once on upgrade. */
-const SEED_ADDITIONS = ['2' => ['ImmiPractice']];
+const SEED_ADDITIONS = ['2' => ['ImmiPractice'], '3' => ['VisaFlo', 'Officio']];
+
+/** Starter listings whose details were corrected in a later version; updated on upgrade unless a vendor has claimed them. */
+const SEED_REFRESH = ['3' => ['Imagility', 'CaseEasy', 'MyCase', 'Docketwise', 'eImmigration', 'CosmoLex', 'Clio']];
 
 /** Creates any missing tables. Safe to run on every upgrade. */
 function run_schema(): void
@@ -17,8 +20,24 @@ function run_schema(): void
         $names = [];
         foreach (SEED_ADDITIONS as $v => $list) if (version_compare((string)$v, (string)$from, '>')) $names = array_merge($names, $list);
         if ($names) seed_directory($names);
+        $refresh = [];
+        foreach (SEED_REFRESH as $v => $list) if (version_compare((string)$v, (string)$from, '>')) $refresh = array_merge($refresh, $list);
+        if ($refresh) refresh_seed_listings($refresh);
     }
     save_setting('schema_version', SCHEMA_VERSION);
+}
+
+/** Updates editor-compiled details of unclaimed starter listings from seed-data.json. */
+function refresh_seed_listings(array $names): void
+{
+    $data = json_decode(file_get_contents(APP . '/seed-data.json'), true);
+    foreach ($data['software'] as $s) {
+        if (!in_array($s['name'], $names, true)) continue;
+        q("UPDATE software SET tagline = ?, description = ?, website = COALESCE(website, ?), domain = COALESCE(domain, ?), features = ?, pricing_note = COALESCE(?, pricing_note), updated_at = UTC_TIMESTAMP()
+            WHERE slug = ? AND owner_id IS NULL", [
+            $s['tagline'], $s['description'], $s['website'] ?? null, domain_from_url($s['website'] ?? null), json_encode($s['features']), $s['pricingNote'] ?? null, slugify($s['name']),
+        ]);
+    }
 }
 
 /** Adds the starter categories and listings. Skips anything that already exists. */
@@ -39,10 +58,10 @@ function seed_directory(?array $only = null): int
         if ($only !== null && !in_array($s['name'], $only, true)) continue;
         $slug = slugify($s['name']);
         if (val('SELECT id FROM software WHERE slug = ?', [$slug])) continue;
-        q("INSERT INTO software (slug, name, tagline, description, website, domain, vendor_name, deployment, regions, audiences, features, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PUBLISHED')", [
+        q("INSERT INTO software (slug, name, tagline, description, website, domain, vendor_name, deployment, regions, audiences, features, pricing_note, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PUBLISHED')", [
             $slug, $s['name'], $s['tagline'], $s['description'], $s['website'] ?? null, domain_from_url($s['website'] ?? null),
-            $s['vendorName'] ?? null, $s['deployment'] ?? null, json_encode($s['regions']), json_encode($s['audiences']), json_encode($s['features']),
+            $s['vendorName'] ?? null, $s['deployment'] ?? null, json_encode($s['regions']), json_encode($s['audiences']), json_encode($s['features']), $s['pricingNote'] ?? null,
         ]);
         $sid = insert_id();
         foreach ($s['categories'] as $c) q('INSERT INTO software_categories (software_id, category_id) VALUES (?, ?)', [$sid, $catIds[$c]]);

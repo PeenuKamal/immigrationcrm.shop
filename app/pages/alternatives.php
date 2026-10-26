@@ -6,11 +6,14 @@ $cats = category_names_for(array_merge([$s['id']], array_column($alts, 'id')));
 $mainCat = $cats[$s['id']][0] ?? 'immigration software';
 $rated = array_values(array_filter($alts, fn($a) => (int)$a['review_count'] > 0));
 $top5 = implode(', ', array_column(array_slice($alts, 0, 5), 'name'));
+$insight = insight("alternatives:{$s['slug']}");
+if ($insight) $insight['related'] = array_values(array_unique(array_merge($insight['related'] ?? [], articles_for("alternatives:{$s['slug']}"))));
 $faqs = [
     ["What are the best alternatives to {$s['name']}?", "The closest alternatives to {$s['name']} in " . lower_words($mainCat) . " are $top5." . ($rated ? sprintf(' The highest rated by verified users is %s (%.1f/5).', $rated[0]['name'], $rated[0]['rating_avg']) : '')],
     ["Why do firms look for {$s['name']} alternatives?", "Common reasons are pricing, support for a specific country's immigration forms (for example IRCC, USCIS or Home Affairs), client portal needs, AI drafting and integrations. Compare features side by side before switching."],
     ['How are these alternatives ranked?', "Alternatives that share the most categories with {$s['name']} appear first, then by number of verified reviews and average rating. Featured placement does not change this list."],
 ];
+$faqs = merge_faqs(insight_faqs($insight), $faqs);
 $crumbs = [['Home', '/'], [$s['name'], "/software/{$s['slug']}"], ['Alternatives', "/software/{$s['slug']}/alternatives"]];
 $meta = meta([
     'title' => "Best {$s['name']} alternatives & competitors (" . year() . ')',
@@ -23,6 +26,8 @@ $meta = meta([
 <?= page_band($crumbs, 'Best ' . e($s['name']) . ' alternatives', count($alts) . ' tools that do the same job as ' . e($s['name']) . ', with verified reviews from immigration practitioners.', updated_line(now())) ?>
 <div class="wrap">
   <div class="answer"><span class="label"><?= icon('sparkles', 14) ?>Quick answer</span><p><strong><?= e($s['name']) ?></strong> is <?= e(lcfirst_tagline($s['tagline'])) ?>. The top alternatives are <?= e($top5) ?>.</p></div>
+  <?= insight_html($insight) ?>
+  <?php if ($insight): ?><h2 style="margin-top:8px">Software alternatives to <?= e($s['name']) ?></h2><?php endif; ?>
   <ol class="listing-rows">
     <?php foreach ($alts as $a): ?>
     <li class="listing"><?= logo_box($a['name'], $a['logo_url']) ?><div>
@@ -33,5 +38,6 @@ $meta = meta([
     </div></li>
     <?php endforeach; ?>
   </ol>
+  <?= $insight ? '' : related_articles_html(articles_for("alternatives:{$s['slug']}")) ?>
   <section class="section"><?= faq_html($faqs) ?></section>
 </div>

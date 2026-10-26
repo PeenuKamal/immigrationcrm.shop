@@ -13,9 +13,14 @@ foreach (array_keys(COUNTRIES) as $cs) {
     $urls[] = [guide_path($cs), $newest, 'weekly', '0.9'];
     foreach (country_categories(country($cs)) as $x) $urls[] = [guide_path($cs, $x['cat']['slug']), $newest, 'weekly', '0.9'];
 }
+$urls[] = ['/blog', max(array_column(articles(), 'updated') ?: [null]), 'weekly', '0.8'];
+foreach (articles() as $a) $urls[] = [article_url($a['slug']), $a['updated'], 'monthly', '0.8'];
+foreach (array_keys(insights()) as $k) if (str_starts_with($k, 'compare:')) $urls[] = ['/compare/' . substr($k, 8), $newest, 'weekly', '0.8'];
 foreach ($list as $s) $urls[] = ["/software/{$s['slug']}", $s['updated_at'], 'weekly', '0.8'];
 foreach ($list as $s) $urls[] = ["/software/{$s['slug']}/alternatives", $s['updated_at'], 'weekly', '0.7'];
 foreach (popular_pairs() as $p) $urls[] = [compare_path([$p['a'], $p['b']]), max($mod[$p['a']] ?? $newest, $mod[$p['b']] ?? $newest), 'weekly', '0.6'];
+$seen = [];
+$urls = array_values(array_filter($urls, function ($u) use (&$seen) { if (isset($seen[$u[0]])) return false; return $seen[$u[0]] = true; }));
 echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 foreach ($urls as [$p, $m, $f, $pr]) {
     echo '<url><loc>' . e(url($p)) . '</loc>' . ($m ? '<lastmod>' . gmdate('c', strtotime($m)) . '</lastmod>' : '') . "<changefreq>$f</changefreq><priority>$pr</priority></url>\n";

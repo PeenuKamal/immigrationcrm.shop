@@ -16,6 +16,9 @@ $faqs = [
 if ($crm) $faqs[] = ["What is the best CRM for immigration practices in $where?", 'Top-ranked immigration CRMs for ' . $c['who'] . ' in ' . $where . ' include ' . join_names(array_map(fn($r) => $r['s']['name'], array_slice($crm['ranked'], 0, 4))) . '. See the full ranking at ' . url(guide_path($c['slug'], 'immigration-crm')) . '.'];
 $faqs[] = ["What should immigration software for $where support?", implode('; ', array_slice($c['look_for'], 0, 4)) . '.'];
 $faqs[] = ['How does ImmigrationCRM.shop rank software?', METHODOLOGY];
+$insight = insight('country:' . $c['slug']);
+if ($insight) $insight['related'] = array_values(array_unique(array_merge($insight['related'] ?? [], articles_for('country:' . $c['slug']))));
+$faqs = merge_faqs($faqs, insight_faqs($insight));
 $meta = meta([
     'title' => $title,
     'description' => "The best immigration CRM, case management, practice management and AI software for {$c['who']} in {$c['name']}, ranked with verified reviews.",
@@ -47,6 +50,8 @@ $meta = meta([
     <ol class="listing-rows"><?php foreach ($top as $i => $r) echo listing_row($r['s'], [], $i + 1, '<ul class="why">' . implode('', array_map(fn($w) => '<li>✓ ' . e($w) . '</li>', array_slice($r['why'], 0, 4))) . '</ul>'); ?></ol>
   </section>
   <?php endforeach; ?>
+
+  <?= insight_html($insight) ?>
 
   <section class="section prose">
     <h2>Immigration practice in <?= e($c['name']) ?></h2>

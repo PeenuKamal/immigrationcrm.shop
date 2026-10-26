@@ -16,6 +16,7 @@ if (count($params) === 1) {
     }
     $o[] = '## Context';
     foreach ($c['context'] as $p) { $o[] = $p; $o[] = ''; }
+    if ($in = insight('country:' . $c['slug'])) { $o[] = insight_md($in); $o[] = ''; }
     $o[] = 'Methodology: ' . METHODOLOGY;
     echo implode("\n", $o);
     return;

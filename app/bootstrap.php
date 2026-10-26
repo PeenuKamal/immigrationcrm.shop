@@ -22,7 +22,7 @@ ini_set('log_errors', '1');
 date_default_timezone_set('UTC');
 mb_internal_encoding('UTF-8');
 
-foreach (['helpers', 'db', 'settings', 'auth', 'mailer', 'queries', 'seo', 'reviews', 'compare', 'stripe', 'indexnow', 'markdown', 'vendor', 'setup', 'countries'] as $lib) {
+foreach (['helpers', 'db', 'settings', 'auth', 'mailer', 'queries', 'seo', 'reviews', 'compare', 'stripe', 'indexnow', 'markdown', 'vendor', 'setup', 'countries', 'content'] as $lib) {
     require APP . "/lib/$lib.php";
 }
 require APP . '/views/partials.php';

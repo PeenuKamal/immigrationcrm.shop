@@ -129,6 +129,11 @@ $summary = "<strong>" . e($s['name']) . '</strong> is ' . e(lcfirst_tagline($s['
         <h3 style="font-size:var(--step-0)">Key features</h3>
         <ul class="tag-list"><?php foreach ($features as $f): ?><li><?= e($f) ?></li><?php endforeach; ?></ul>
       <?php endif; ?>
+      <?php $expert = insight_links_for($s['slug']); $reads = array_filter(array_map('article', articles_for('software:' . $s['slug']))); if ($expert || $reads): ?>
+        <h3 style="font-size:var(--step-0);margin-top:18px">Expert analysis</h3>
+        <ul class="aside-links"><?php foreach ($expert as [$label, $href]): ?><li><a href="<?= e($href) ?>"><?= e($label) ?></a></li><?php endforeach; ?>
+          <?php foreach ($reads as $a): ?><li><a href="<?= e(article_url($a['slug'])) ?>"><?= e($a['title']) ?></a></li><?php endforeach; ?></ul>
+      <?php endif; ?>
     </aside>
   </div>
 </div>

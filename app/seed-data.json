@@ -151,7 +151,7 @@
   {
    "name": "CaseEasy",
    "tagline": "Case management for Canadian immigration consultants and lawyers.",
-   "description": "CaseEasy is case management software designed for Registered Canadian Immigration Consultants and immigration lawyers, focused on organising and automating the Canadian immigration case process.",
+   "description": "CaseEasy is cloud case management for Registered Canadian Immigration Consultants and immigration lawyers, founded in Toronto in 2017. It covers client management, a client portal with document sharing, communication, tasks and workflows, invoicing with Stripe and LawPay payments, retainer automation and IRCC forms. Pricing starts at CA$79 per user per month, with a free version.",
    "website": "https://caseeasy.ca",
    "deployment": "Cloud",
    "regions": [
@@ -163,13 +163,19 @@
    ],
    "features": [
     "Case management",
+    "Client portal",
     "Client intake",
+    "IRCC forms",
+    "Document sharing",
+    "Task management",
+    "Invoicing",
     "Online payments"
    ],
    "categories": [
     "immigration-crm",
     "immigration-case-management"
-   ]
+   ],
+   "pricingNote": "From CA$79/user/month; free version available"
   },
   {
    "name": "Centerbase",
@@ -217,7 +223,8 @@
    ],
    "categories": [
     "law-practice-management"
-   ]
+   ],
+   "pricingNote": "From $49/user/month; add-ons extra"
   },
   {
    "name": "Complize",
@@ -256,7 +263,8 @@
    ],
    "categories": [
     "law-practice-management"
-   ]
+   ],
+   "pricingNote": "From $49/user/month billed annually"
   },
   {
    "name": "CRMtravel Visa Management",
@@ -305,7 +313,8 @@
    ],
    "categories": [
     "immigration-case-management"
-   ]
+   ],
+   "pricingNote": "$69, $99 or $119 per user/month (Basic, Pro, Advanced)"
   },
   {
    "name": "DraftyAI",
@@ -351,7 +360,8 @@
    ],
    "categories": [
     "immigration-case-management"
-   ]
+   ],
+   "pricingNote": "$55, $82 or $100 per user/month billed annually; 50% off for non-profits"
   },
   {
    "name": "Envoy Global",
@@ -448,8 +458,8 @@
   },
   {
    "name": "Imagility",
-   "tagline": "Immigration platform for attorneys, employers and beneficiaries.",
-   "description": "Imagility is a cloud-based immigration platform offering case management, document management, billing and reporting for attorneys and the employers they serve.",
+   "tagline": "Petition building, AI analysis and e-filing for business immigration.",
+   "description": "Imagility is a cloud immigration platform for attorneys, employers and beneficiaries. It builds petitions for employment categories (H-1B, L, O, E, TN, I-140 and green cards) and, per the vendor, family and asylum cases, with AI petition analysis, an RFE response builder, petition tracking, invoicing through LawPay and an e-filing connector for USCIS forms such as I-129, G-28, I-907 and Labor Condition Applications.",
    "deployment": "Cloud",
    "regions": [
     "USA"
@@ -459,15 +469,21 @@
     "Employers"
    ],
    "features": [
+    "Petition builder",
+    "AI petition analysis",
+    "RFE response builder",
+    "USCIS e-filing",
     "Case management",
+    "Beneficiary portal",
     "Document management",
-    "Billing",
+    "Invoicing",
     "Reporting"
    ],
    "categories": [
     "immigration-case-management",
     "corporate-immigration"
-   ]
+   ],
+   "website": "https://imagility.co"
   },
   {
    "name": "ImmiCompliance",
@@ -764,6 +780,36 @@
    ],
    "categories": [
     "law-practice-management"
+   ],
+   "pricingNote": "From $50/user/month billed annually (Basic); Pro $100, Advanced $130"
+  },
+  {
+   "name": "Officio",
+   "tagline": "Client file management and forms for Canadian immigration professionals.",
+   "description": "Officio is cloud-based client file management software for Canadian immigration consultants and lawyers. It automates data entry across more than 400 Canadian immigration forms and includes a client portal for document uploads and forms, client and case management with automated reminders, prospect assessment, billing with trust account management, branded templates and an AI writing assistant.",
+   "website": "https://officio.ca",
+   "vendorName": "Unique Softwares",
+   "deployment": "Cloud",
+   "regions": [
+    "Canada"
+   ],
+   "audiences": [
+    "RCICs",
+    "Immigration consultants",
+    "Immigration lawyers"
+   ],
+   "features": [
+    "IRCC form autofill",
+    "Client portal",
+    "Lead management",
+    "Trust accounting",
+    "Billing",
+    "Automated reminders",
+    "AI writing assistant"
+   ],
+   "categories": [
+    "immigration-crm",
+    "immigration-case-management"
    ]
   },
   {
@@ -918,6 +964,35 @@
    ],
    "categories": [
     "ai-immigration"
+   ]
+  },
+  {
+   "name": "VisaFlo",
+   "tagline": "IMM forms, IRCC portal autofill and intake for Canadian immigration practices.",
+   "description": "VisaFlo is Canadian immigration software for RCICs and their teams. It generates IMM form packages from case-specific intake questionnaires (13 languages), lets the practitioner review and lock client answers, autofills supported IRCC portals through a Chrome extension (beta), and handles agreements with e-signature, Stripe invoicing and QuickBooks-ready exports. Pricing is based on case volume with unlimited users, and client data is hosted in Canada.",
+   "website": "https://visaflo.ca",
+   "vendorName": "VisaFlo Inc",
+   "deployment": "Cloud",
+   "regions": [
+    "Canada"
+   ],
+   "audiences": [
+    "RCICs",
+    "Immigration consultants"
+   ],
+   "features": [
+    "IRCC form autofill",
+    "IRCC portal autofill",
+    "Client intake",
+    "Multilingual questionnaires",
+    "E-signature",
+    "Invoicing",
+    "Online payments",
+    "Lead management"
+   ],
+   "categories": [
+    "immigration-crm",
+    "immigration-case-management"
    ]
   },
   {

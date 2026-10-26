@@ -24,6 +24,13 @@ foreach (array_keys(COUNTRIES) as $cs) {
     }
 }
 $o[] = '';
+$o[] = '## Expert answers and buying guides';
+foreach (articles() as $a) $o[] = '- [' . $a['title'] . '](' . url(article_url($a['slug']) . '.md') . '): ' . md_plain($a['question']);
+foreach (insights() as $k => $in) {
+    $p = str_starts_with($k, 'compare:') ? '/compare/' . substr($k, 8) : (str_starts_with($k, 'alternatives:') ? '/software/' . substr($k, 13) . '/alternatives' : ($k === 'best' ? '/best' : '/best/' . substr($k, 8)));
+    $o[] = '- [' . $in['title'] . '](' . url($p) . '): ' . implode(' ', array_map(fn($s) => $s['heading'], $in['sections']));
+}
+$o[] = '';
 $o[] = '## Categories';
 foreach (categories_with_counts() as $c) {
     $o[] = '- [Best ' . category_seo($c['slug'], $c['name']) . '](' . url("/category/{$c['slug']}") . "): {$c['description']} ({$c['cnt']} tools; Markdown: " . url("/category/{$c['slug']}.md") . ')';

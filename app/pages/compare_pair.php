@@ -7,10 +7,14 @@ $items = load_compare($slugs);
 if (count($items) < 2) not_found();
 $canonical = compare_path(array_map(fn($i) => $i['s']['slug'], $items));
 if ("/compare/$raw" !== $canonical) redirect($canonical, 301);
+$pageKey = 'compare:' . substr($canonical, 9);
+$insight = insight($pageKey);
+if ($insight) $insight['related'] = array_values(array_unique(array_merge($insight['related'] ?? [], articles_for($pageKey))));
 
 $names = array_map(fn($i) => $i['s']['name'], $items);
 $t = implode(' vs ', $names);
 $faqs = compare_faqs($items);
+if ($insight) $faqs = merge_faqs(insight_faqs($insight), array_values(array_filter($faqs, fn($f) => !preg_match('/^Which is (better|rated higher)/', $f[0]))));
 $collect = function (string $field) use ($items) {
     $all = [];
     foreach ($items as $i) $all = array_merge($all, json_list($i['s'][$field]));
@@ -29,8 +33,8 @@ $fmt = fn($v, $has) => $has ? number_format((float)$v, 1) : '—';
 $yes = fn(bool $v) => $v ? '<td class="yes">Yes</td>' : '<td class="no">—</td>';
 
 $meta = meta([
-    'title' => "$t: side-by-side comparison (" . year() . ')',
-    'description' => "$t compared on verified user ratings, features, pricing, markets served and real pros and cons from immigration practitioners.",
+    'title' => $insight['meta_title'] ?? "$t: side-by-side comparison (" . year() . ')',
+    'description' => $insight['meta_description'] ?? "$t compared on verified user ratings, features, pricing, markets served and real pros and cons from immigration practitioners.",
     'path' => $canonical,
     'image' => url("$canonical/og.png"),
     'modified' => gmdate('Y-m-d H:i:s', $updated),
@@ -44,12 +48,15 @@ $meta = meta([
 <?= page_band($crumbs, e($t), 'Side-by-side comparison using verified practitioner reviews and listing data.', updated_line(gmdate('Y-m-d H:i:s', $updated))) ?>
 <div class="wrap">
   <div class="answer"><span class="label"><?= icon('sparkles', 14) ?>At a glance</span>
+    <?php if (!empty($insight['summary'])): ?><p><strong>Our verdict:</strong> <?= md_inline($insight['summary']) ?> <a href="#ins-<?= e($insight['id']) ?>">Read the analysis</a></p><?php endif; ?>
     <?php foreach ($items as $i): $s = $i['s']; $reg = array_slice(json_list($s['regions']), 0, 4); ?>
     <p><strong><?= e($s['name']) ?></strong> is <?= e(lcfirst_tagline($s['tagline'])) ?><?= $reg ? ', serving ' . e(implode(', ', $reg)) : '' ?>.
       <?= (int)$s['review_count'] ? sprintf('Rated %.1f/5 from %d verified review%s.', $s['rating_avg'], $s['review_count'], $s['review_count'] > 1 ? 's' : '') : 'No verified reviews yet.' ?></p>
     <?php endforeach; ?>
   </div>
 
+  <?php if ($insight): ?><?= str_replace('class="section insight"', 'class="section insight top"', insight_html($insight)) ?>
+  <h2 style="margin:40px 0 16px">Side-by-side: features, markets and verified ratings</h2><?php endif; ?>
   <div class="compare-scroll">
     <table class="compare">
       <caption class="sr-only"><?= e($t) ?> feature and rating comparison</caption>
@@ -83,6 +90,7 @@ $meta = meta([
   </div>
   <p class="small muted" style="margin-top:8px">“—” means the feature isn't listed on the product's profile, not necessarily that it's missing. Vendors keep their own listings up to date.</p>
 
+  <?= $insight ? '' : related_articles_html(articles_for($pageKey)) ?>
   <section class="section" aria-labelledby="what-users-say">
     <h2 id="what-users-say">What verified users say</h2>
     <div class="grid-2" style="gap:24px">
